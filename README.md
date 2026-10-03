@@ -4,6 +4,8 @@ Eylül 2026'da tanımlanan therizinosaur *Kayrasaurus changliensis* için, dönd
 
 ![Lisans: MIT](https://img.shields.io/badge/lisans-MIT-green) ![Three.js r128](https://img.shields.io/badge/three.js-r128-black)
 
+![Sitenin genel görünümü: solda 3B Kayrasaurus modeli, sağda bilgi bölümleri](docs/ekran-genel.png)
+
 ## Özellikler
 
 - **Etkileşimli 3B model.** Three.js ile tamamen kodla kurulmuş bir canlandırma. Sürükleyerek ya da ok tuşlarıyla döndürülür, yakınlaştırılır.
@@ -11,6 +13,12 @@ Eylül 2026'da tanımlanan therizinosaur *Kayrasaurus changliensis* için, dönd
 - **Görünüm seçenekleri.** Tüyler açılıp kapatılabilir, ölçek için 1,75 m boyunda bir insan figürü eklenebilir.
 - **Bilgi bölümleri.** Künye, adın kökeni, Jehol Biyotası'ndaki akrabaları, haberlerde karışan bilgiler ve kaynaklar.
 - **Duyarlı tasarım.** Telefon ve masaüstünde çalışır; açık ve koyu temayı destekler.
+
+### Yakın çekim
+
+Anatomi noktalarından birine tıklayınca kamera o bölgeye yaklaşır.
+
+<img src="docs/ekran-yuz.png" alt="Modelin yüzüne yakın çekim: gaga, dişler ve göz" width="560">
 
 ## Çalıştırma
 
@@ -30,6 +38,7 @@ Three.js ve yazı tipleri CDN üzerinden yüklendiği için internet bağlantıs
 | --- | --- |
 | `index.html` | Sitenin tamamı: içerik, stil ve 3B model kodu |
 | `README.md` | Bu belge |
+| `docs/` | README'de kullanılan ekran görüntüleri |
 | `LICENSE` | MIT lisansı |
 | `.gitignore` | Depoya girmemesi gereken dosyalar |
 
