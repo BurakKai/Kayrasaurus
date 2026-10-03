@@ -24,10 +24,6 @@ cd Kayrasaurus
 
 Three.js ve yazı tipleri CDN üzerinden yüklendiği için internet bağlantısı gerekir.
 
-### GitHub Pages ile yayımlama
-
-Depoda **Settings → Pages** bölümüne girin, kaynak olarak `main` dalını ve `/ (root)` klasörünü seçin. Site birkaç dakika içinde `https://burakkai.github.io/Kayrasaurus/` adresinde yayına girer.
-
 ## Proje yapısı
 
 | Dosya | Açıklama |
