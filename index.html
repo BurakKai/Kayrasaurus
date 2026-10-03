@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Yeni tanımlanan therizinosaur Kayrasaurus changliensis için döndürülebilir 3B modelli bilgilendirme sitesi.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Kayrasaurus changliensis</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: müze vitrini. Solda sabit duran 3B örnek, sağda vitrin etiketleri gibi akan bilgi sütunu. */
+:root{
+  --bg:#E3E8E2; --surface:#F1F4EF; --ink:#15221D; --muted:#52635C; --line:#C2CBC3;
+  --accent:#7A5E00; --accent-soft:#E6DBAE; --on-accent:#FFFBEA; --ground:#B9C5BA;
+  --display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --body:"Newsreader",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1613; --surface:#17211D; --ink:#E6ECE6; --muted:#9BABA3; --line:#2C3A34;
+    --accent:#E2B93B; --accent-soft:#3A3212; --on-accent:#1A1500; --ground:#22302A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1613; --surface:#17211D; --ink:#E6ECE6; --muted:#9BABA3; --line:#2C3A34;
+  --accent:#E2B93B; --accent-soft:#3A3212; --on-accent:#1A1500; --ground:#22302A;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.55}
+.wrap{max-width:1360px;margin:0 auto;padding-inline:clamp(16px,3.2vw,44px);padding-block:clamp(20px,3vw,40px) 64px}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted)}
+header.top{display:flex;flex-direction:column;gap:10px;margin-bottom:clamp(20px,3vw,36px)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(46px,8vw,104px);line-height:.88;letter-spacing:-.035em;margin:0;text-wrap:balance;overflow-wrap:anywhere}
+h1 em{display:block;font-family:var(--body);font-style:italic;font-weight:400;font-size:.3em;letter-spacing:0;line-height:1.2;color:var(--accent);margin-top:.35em}
+.lede{max-width:62ch;font-size:clamp(18px,1.6vw,21px);margin:6px 0 0}
+.layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(24px,3.2vw,52px);align-items:start}
+.viewer{position:sticky;top:calc(env(safe-area-inset-top, 0px) + 16px);display:flex;flex-direction:column;gap:12px;min-width:0}
+.stage{position:relative;height:clamp(340px,64vh,660px);border:1px solid var(--line);background:radial-gradient(ellipse at 50% 38%,var(--surface),var(--bg) 75%);overflow:hidden;touch-action:pan-y;cursor:grab}
+.stage.drag{cursor:grabbing}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;outline-offset:-3px}
+.stage .corner{position:absolute;left:12px;top:10px;pointer-events:none}
+.hs{position:absolute;left:0;top:0;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;border:2px solid var(--surface);background:var(--accent);color:var(--on-accent);font-family:var(--mono);font-size:13px;font-weight:500;cursor:pointer;padding:0;display:grid;place-items:center;transition:scale .15s}
+.hs:hover,.hs[aria-pressed="true"]{scale:1.25}
+.hs[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:2px}
+.tag{position:absolute;left:0;top:0;font-family:var(--mono);font-size:11px;color:var(--ink);background:var(--surface);border:1px solid var(--line);padding:1px 6px;white-space:nowrap;pointer-events:none;translate:-50% 6px}
+.caption{position:absolute;left:12px;right:12px;bottom:12px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);padding:8px 12px;font-size:15px;line-height:1.35;pointer-events:none}
+.caption b{font-family:var(--display);font-weight:800;letter-spacing:-.01em}
+.fail{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:8px}
+.controls button{font-family:var(--mono);font-size:12px;letter-spacing:.04em;padding:8px 12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.controls button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.controls button:hover{border-color:var(--ink)}
+button:focus-visible,canvas:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.note{font-size:14.5px;line-height:1.45;color:var(--muted);margin:0;max-width:70ch}
+.info{display:flex;flex-direction:column;gap:clamp(34px,4vw,52px);min-width:0}
+section{display:flex;flex-direction:column;gap:14px;min-width:0}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(24px,2.4vw,31px);letter-spacing:-.02em;line-height:1.05;margin:0;text-wrap:balance;padding-top:14px;border-top:2px solid var(--ink)}
+p{margin:0;max-width:65ch}
+dl.kunye{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:0;margin:0}
+dl.kunye dt,dl.kunye dd{padding:9px 0;border-bottom:1px solid var(--line);margin:0}
+dl.kunye dt{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);padding-right:20px;padding-top:13px}
+dl.kunye dd{font-variant-numeric:tabular-nums}
+.parts{display:flex;flex-direction:column;gap:0;list-style:none;margin:0;padding:0}
+.part{display:grid;grid-template-columns:28px minmax(0,1fr);gap:14px;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;border-bottom:1px solid var(--line);padding:14px 10px 14px 8px;cursor:pointer}
+.part:hover{background:var(--surface)}
+.part[aria-pressed="true"]{background:var(--accent-soft)}
+.part .n{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-family:var(--mono);font-size:13px;display:grid;place-items:center}
+.part h3{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.01em;margin:0 0 3px;line-height:1.2}
+.part span.t{display:block;font-size:17px;line-height:1.5}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:16px;min-width:420px}
+th,td{text-align:left;padding:9px 12px 9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.06em;color:var(--muted)}
+td i{font-style:italic}
+tr.me td{font-weight:600}
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr);gap:4px}
+.bar .lab{display:flex;justify-content:space-between;gap:12px;font-size:15px;font-variant-numeric:tabular-nums}
+.bar .track{height:12px;background:var(--line)}
+.bar .fill{height:100%;background:var(--accent)}
+.bar.b2 .fill{background:var(--muted)}
+ul.myth{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+ul.myth li{padding:12px 0;border-bottom:1px solid var(--line);max-width:65ch}
+ul.myth b{font-weight:600}
+ol.src{margin:0;padding-left:1.2em;font-size:15.5px;display:flex;flex-direction:column;gap:6px}
+a{color:var(--accent);text-underline-offset:3px}
+@media (max-width:900px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .viewer{position:static}
+  .stage{height:clamp(320px,92vw,460px)}
+  body{font-size:17px}
+}
+@media (prefers-reduced-motion:reduce){.hs{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="mono">YENİ TÜR · EYLÜL 2026 · ERKEN KRETASE · YİXİAN FORMASYONU, ÇİN</div>
+    <h1>Kayrasaurus<em>Kayrasaurus changliensis</em></h1>
+    <p class="lede">Adını Türk mitolojisinden alan, tüylü ve uzun pençeli bir ot yiyici. Yaklaşık 125 milyon yıl önce bugünkü Çin'in Liaoning eyaletinde yaşadı ve Jehol Biyotası'nda bulunan en büyük therizinosaur.</p>
+  </header>
+
+  <div class="layout">
+    <div class="viewer">
+      <div class="stage" id="stage">
+        <canvas id="cv" tabindex="0" aria-label="Kayrasaurus 3B modeli. Sürükleyerek ya da ok tuşlarıyla döndürün."></canvas>
+        <div class="mono corner">TEMSİLİ CANLANDIRMA · SÜRÜKLEYEREK DÖNDÜR</div>
+        <button class="hs" data-id="skull" aria-pressed="false" aria-label="Kafatası">1</button>
+        <button class="hs" data-id="teeth" aria-pressed="false" aria-label="Dişler">2</button>
+        <button class="hs" data-id="neck" aria-pressed="false" aria-label="Boyun">3</button>
+        <button class="hs" data-id="claws" aria-pressed="false" aria-label="El pençeleri">4</button>
+        <button class="hs" data-id="feathers" aria-pressed="false" aria-label="Tüyler">5</button>
+        <button class="hs" data-id="body" aria-pressed="false" aria-label="Gövde">6</button>
+        <span class="tag" id="tagLen">3,6 m</span>
+        <span class="tag" id="tagHuman" hidden>İnsan · 1,75 m</span>
+        <div class="caption" id="caption" aria-live="polite" hidden></div>
+      </div>
+      <div class="controls">
+        <button id="bRot" aria-pressed="true">Döndür</button>
+        <button id="bFea" aria-pressed="true">Tüyler</button>
+        <button id="bHum" aria-pressed="false">İnsan ölçeği</button>
+        <button id="bIn" aria-label="Yakınlaştır">+ Yakın</button>
+        <button id="bOut" aria-label="Uzaklaştır">− Uzak</button>
+        <button id="bAll">Tüm gövde</button>
+      </div>
+      <p class="note">Model, yayımlanan ölçülere (3,6 m uzunluk) ve therizinosaur vücut planına göre kodla kurulmuş temsili bir canlandırmadır; fosilin taraması değildir. Tüy rengi tahminidir. Bir habere göre örnekte arka bacaklar korunmamış, bu yüzden bacaklar yakın akrabalara göre tamamlandı.</p>
+    </div>
+
+    <div class="info">
+      <section>
+        <h2>Künye</h2>
+        <dl class="kunye">
+          <dt>GRUP</dt><dd>Therizinosauria (theropod dinozor)</dd>
+          <dt>DÖNEM</dt><dd>Erken Kretase, yaklaşık 125 milyon yıl önce</dd>
+          <dt>YER</dt><dd>Yixian Formasyonu, Batı Liaoning, Çin (Jehol Biyotası)</dd>
+          <dt>UZUNLUK</dt><dd>3,6 metreden fazla</dd>
+          <dt>KÜTLE</dt><dd>Tahminler 115 ile 275 kg arasında</dd>
+          <dt>BESLENME</dt><dd>Ot yiyici</dd>
+          <dt>ÖRNEK</dt><dd>Kafatası büyük oranda korunmuş, neredeyse eksiksiz bir iskelet. Henüz büyümesini tamamlamamış bir birey.</dd>
+          <dt>TANIMLAYAN</dt><dd>Chun-Chi Liao, William J. Freimuth, Lindsay E. Zanno, Xing Xu (2026)</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Anatomi</h2>
+        <p>Bir bölüme dokunun, model o bölgeye dönsün.</p>
+        <ul class="parts">
+          <li><button class="part" data-id="skull" aria-pressed="false" data-short="Büyük oranda eksiksiz korunmuş; çenede işlevi bilinmeyen büyük açıklıklar var."><span class="n">1</span><span><h3>Kafatası</h3><span class="t">Therizinosaurlarda kafatası nadiren iyi korunur. Kayrasaurus'unki büyük oranda eksiksiz. Çene kemiklerinde büyük açıklıklar bulundu; bunların ne işe yaradığı henüz bilinmiyor.</span></span></button></li>
+          <li><button class="part" data-id="teeth" aria-pressed="false" data-short="Alt çenede en az 45 diş; bilinen therizinosaurlar içinde en fazlası."><span class="n">2</span><span><h3>Dişler</h3><span class="t">Çok küçük ve sık dizilmiş dişler. Üst çenenin her yanında 32'den fazla diş yuvası, alt çenede en az 45 diş sayıldı. Bu, bilinen therizinosaurlar içindeki en yüksek sayı. Dişler avı parçalamaya değil, bitki işlemeye uygun.</span></span></button></li>
+          <li><button class="part" data-id="neck" aria-pressed="false" data-short="Uzun boyun ve alışılmadık boyun omurları."><span class="n">3</span><span><h3>Boyun</h3><span class="t">Uzun boyun, küçük baş. Araştırmacılar boyun omurlarının yapısını türü ayırt eden özellikler arasında sayıyor. Hayvan büyük olasılıkla yüksekteki bitkilere uzanarak besleniyordu.</span></span></button></li>
+          <li><button class="part" data-id="claws" aria-pressed="false" data-short="Uzun, kıvrık el pençeleri; anatomisi türe özgü."><span class="n">4</span><span><h3>El pençeleri</h3><span class="t">Ön uzuvlardaki uzun ve kıvrık pençeler grubun imzası. Kayrasaurus'ta pençe anatomisi de türe özgü ayrıntılar taşıyor. Bu pençeler avlanmak için değil, büyük olasılıkla dalları çekmek için kullanılıyordu.</span></span></button></li>
+          <li><button class="part" data-id="feathers" aria-pressed="false" data-short="Tüylü olarak canlandırılıyor; renk bilinmiyor."><span class="n">5</span><span><h3>Tüyler</h3><span class="t">Aynı ekosistemdeki akrabası Beipiaosaurus'un fosillerinde tüy izleri korunmuştur. Kayrasaurus da tüylü olarak canlandırılıyor; araştırmacılar görünüşünü “tüylü bir ayıya” benzetiyor. Rengi bilinmiyor.</span></span></button></li>
+          <li><button class="part" data-id="body" aria-pressed="false" data-short="Sağlam, ağır yapı; hızlı koşmaya az uygun."><span class="n">6</span><span><h3>Gövde</h3><span class="t">İki ayak üzerinde yürüyen, geniş karınlı ve ağır yapılı bir hayvan. Kemik kaynaşma düzeni bireyin hâlâ büyüdüğünü gösteriyor, yani yetişkinler daha da iri olabilir.</span></span></button></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Ad nereden geliyor?</h2>
+        <p>Cins adı Türk mitolojisinden alındı. Kayra (Kayra Han), Türk ve Altay mitolojisinde yaratıcı tanrının adıdır. “Saurus” ise Yunanca “kertenkele” demek.</p>
+        <p>Tür adı <i>changliensis</i>'in kökeni taranan haberlerde açıklanmıyor. Makale çıkmadan önce bir araştırmacı, adın Hebei'deki Changli ilçesine gönderme olabileceğini tahmin etmişti; bu doğrulanmış değil.</p>
+      </section>
+
+      <section>
+        <h2>Jehol'deki akrabaları</h2>
+        <p>Aynı ekosistemden dört therizinosaur biliniyor. Araştırmacılar bunları iki farklı yaşam tarzına ayırıyor ve Kayrasaurus'u soy ağacında Jianchangosaurus ile Beipiaosaurus'un arasına yerleştiriyor.</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>CİNS</th><th>YAPI</th><th>BESLENME İPUCU</th></tr></thead>
+            <tbody>
+              <tr class="me"><td><i>Kayrasaurus</i></td><td>Sağlam, ağır</td><td>Güçlü ısırık (olası)</td></tr>
+              <tr><td><i>Beipiaosaurus</i></td><td>Sağlam, ağır</td><td>Güçlü ısırık</td></tr>
+              <tr><td><i>Jianchangosaurus</i></td><td>Hafif, koşucu</td><td>Ön uzuvlarla toplama</td></tr>
+              <tr><td><i>Lingyuanosaurus</i></td><td>Hafif, koşucu</td><td>Ön uzuvlarla toplama</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="bars" aria-label="Uzunluk karşılaştırması">
+          <div class="bar"><div class="lab"><span><i>Kayrasaurus</i></span><span>3,6 m+</span></div><div class="track"><div class="fill" style="width:100%"></div></div></div>
+          <div class="bar b2"><div class="lab"><span><i>Beipiaosaurus</i></span><span>≈ 2,25 m</span></div><div class="track"><div class="fill" style="width:62.5%"></div></div></div>
+        </div>
+        <p class="note">Beipiaosaurus değeri, makaledeki “en az 1,6 kat” oranından hesaplandı (3,6 ÷ 1,6).</p>
+      </section>
+
+      <section>
+        <h2>Haberlerde karışanlar</h2>
+        <ul class="myth">
+          <li><b>“Gelmiş geçmiş en büyük therizinosaur.”</b> Değil. Jehol Biyotası'nda bulunanların en büyüğü. Geç Kretase'de yaşayan Therizinosaurus yaklaşık 10 metreye ulaşıyordu.</li>
+          <li><b>“Bir metrelik pençeler.”</b> O ölçü Therizinosaurus'a ait. Kayrasaurus'un pençeleri uzun ve kıvrık, ama 3,6 metrelik bir hayvanın ölçeğinde.</li>
+          <li><b>“275 kilo.”</b> Bu, tahmin aralığının üst ucu. Kaynaklar 115 ile 275 kg arasında değerler veriyor ve örnek genç bir bireye ait.</li>
+          <li><b>“Korkunç bir yırtıcı.”</b> Ataları etçil theropodlardı, ancak therizinosaurlar zamanla bitkiyle beslenmeye uyum sağladı.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Kaynaklar</h2>
+        <ol class="src">
+          <li>Liao C.-C., Freimuth W. J., Zanno L. E., Xu X. (2026). A new therizinosaur from the Early Cretaceous Jehol Biota and ecomorphological patterns among early therizinosaurians. <i>Journal of Systematic Palaeontology</i> 24(2): 2710287. <a href="https://doi.org/10.1080/14772019.2026.2710287">doi:10.1080/14772019.2026.2710287</a></li>
+          <li><a href="https://www.sci.news/paleontology/kayrasaurus-changliensis-15082.html">Sci.News, 21 Eylül 2026</a></li>
+          <li><a href="https://greekreporter.com/2026/09/23/new-dinosaur-species-teeth-china/">Greek Reporter, 23 Eylül 2026</a></li>
+          <li><a href="https://www.popsci.com/?p=786289">Popular Science</a></li>
+          <li><a href="https://zamin.uz/en/world/222672-xitoyda-ulkan-tirnoqli-yangi-dinozavr-turi-aniqlandi.html">Zamin.uz (Phys.org'dan aktarım)</a></li>
+        </ol>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+document.documentElement.lang = 'tr';
+(function(){
+  const stage = document.getElementById('stage');
+  const canvas = document.getElementById('cv');
+  const caption = document.getElementById('caption');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function fail(){
+    const d = document.createElement('div'); d.className = 'fail';
+    d.textContent = '3B model bu cihazda açılamadı. Bilgi bölümleri aşağıda okunabilir.';
+    stage.querySelectorAll('.hs,.tag').forEach(e => e.hidden = true);
+    stage.appendChild(d);
+  }
+  if (!window.THREE) { fail(); return; }
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true}); }
+  catch(e){ fail(); return; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 50);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x4d5a50, 0.7));
+  const sun = new THREE.DirectionalLight(0xfff1d8, 1.0); sun.position.set(3,5,4); scene.add(sun);
+  const fill = new THREE.DirectionalLight(0xbfd4ff, 0.3); fill.position.set(-3,2,-3); scene.add(fill);
+
+  const V = (x,y,z) => new THREE.Vector3(x,y,z);
+  const C = h => new THREE.Color(h);
+  const TOP = C(0x45200f), BELLY = C(0xb08f5e), SKIN = C(0x6b563f), HORN = C(0x2a2520);
+  const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+  const bodyColor = (t, ny) => { let k = clamp((0.3 - ny)/1.1, 0, 1); k = k*k*(3-2*k); return TOP.clone().lerp(BELLY, k); };
+  const flat = c => () => c;
+
+  const dino = new THREE.Group(); scene.add(dino);
+  const skinMat = new THREE.MeshStandardMaterial({vertexColors:true, roughness:0.85, metalness:0});
+
+  function tube(pts, radii, o){
+    o = o || {};
+    const seg = o.seg || 40, rad = o.rad || 14, sx = o.sx || 1, sz = o.sz || 1, colFn = o.color || bodyColor;
+    const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
+    const n = pts.length, pos = [], nor = [], col = [], idx = [], rings = [];
+    const zr = V(0,0,1), yr = V(0,1,0);
+    for (let i = 0; i <= seg; i++){
+      const t = i/seg, P = curve.getPoint(t), T = curve.getTangent(t).normalize();
+      const f = t*(n-1), i0 = Math.min(n-2, Math.floor(f)); let k = f - i0; k = k*k*(3-2*k);
+      const r = radii[i0]*(1-k) + radii[i0+1]*k;
+      const ref = Math.abs(T.z) > 0.9 ? yr : zr;
+      const N = new THREE.Vector3().crossVectors(ref, T).normalize();
+      const B = new THREE.Vector3().crossVectors(T, N);
+      const sxv = o.sxFn ? o.sxFn(t) : sx;
+      rings.push({P,T,N,B,r,sx:sxv,sz});
+      for (let j = 0; j <= rad; j++){
+        const a = j/rad*Math.PI*2, c = Math.cos(a), s = Math.sin(a);
+        pos.push(P.x + N.x*c*r*sxv + B.x*s*r*sz, P.y + N.y*c*r*sxv + B.y*s*r*sz, P.z + N.z*c*r*sxv + B.z*s*r*sz);
+        const nv = V(N.x*c/sxv + B.x*s/sz, N.y*c/sxv + B.y*s/sz, N.z*c/sxv + B.z*s/sz).normalize();
+        nor.push(nv.x, nv.y, nv.z);
+        const cc = colFn(t, nv.y); col.push(cc.r, cc.g, cc.b);
+      }
+    }
+    for (let i = 0; i < seg; i++) for (let j = 0; j < rad; j++){
+      const a = i*(rad+1) + j, b = a + rad + 1;
+      idx.push(a, a+1, b, a+1, b+1, b);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+    g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    g.setIndex(idx);
+    dino.add(new THREE.Mesh(g, skinMat));
+    return {rings, sx, sz, seg};
+  }
+  function ball(p, r, c){
+    const g = new THREE.SphereGeometry(r, 12, 10);
+    const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({color:c, roughness:0.8}));
+    m.position.copy(p); dino.add(m); return m;
+  }
+
+  // Tüyler tek bir InstancedMesh içinde toplanır
+  const plumes = [];
+  function surf(tb, u, a){
+    const R = tb.rings[Math.round(u*tb.seg)], c = Math.cos(a), s = Math.sin(a);
+    const pos = R.P.clone().addScaledVector(R.N, c*R.r*R.sx).addScaledVector(R.B, s*R.r*R.sz);
+    const nrm = R.N.clone().multiplyScalar(c/R.sx).addScaledVector(R.B, s/R.sz).normalize();
+    return {pos, nrm, T:R.T, r:R.r};
+  }
+  function feather(tb, count, o){
+    let made = 0, guard = 0;
+    while (made < count && guard++ < count*20){
+      const u = o.u0 + Math.random()*(o.u1 - o.u0), a = o.aSpan != null ? o.a0 + Math.random()*o.aSpan : Math.random()*Math.PI*2;
+      const s = surf(tb, u, a);
+      if (Math.random() > s.r/o.rmax + 0.12) continue;
+      const dir = s.nrm.clone().multiplyScalar(o.out || 0.5).addScaledVector(s.T, o.sign*0.95).add(V(0,-(o.droop != null ? o.droop : 0.28),0)).normalize();
+      const len = (o.len || 0.09) * (0.65 + Math.random()*0.7) * (o.lenFn ? o.lenFn(u) : 1);
+      const col = bodyColor(0, s.nrm.y).multiplyScalar(0.78 + Math.random()*0.4);
+      plumes.push({pos:s.pos, dir, len, w:(0.012 + Math.random()*0.012)*(o.w || 1), col});
+      made++;
+    }
+  }
+
+  // Gövde: kuyruk ucundan boyun tepesine tek omurga
+  const spine = tube(
+    [V(-1.95,0.82,0),V(-1.5,0.86,0),V(-1.0,0.93,0),V(-0.55,1.0,0),V(-0.2,1.05,0),V(0.12,1.14,0),V(0.4,1.32,0),V(0.58,1.56,0),V(0.72,1.82,0),V(0.85,2.06,0),V(0.98,2.22,0)],
+    [0.012,0.05,0.10,0.19,0.30,0.36,0.29,0.17,0.105,0.08,0.07],
+    {seg:90, rad:22, sx:1.12, sz:1}
+  );
+  feather(spine, 3000, {u0:0.01, u1:0.97, rmax:0.36, sign:-1, len:0.1, lenFn:u => u < 0.2 ? 1.9 : (u > 0.72 ? 0.6 : 1)});
+
+  // Baş: kafatası, alt çene, gaga, dişler, göz
+  const hx = 1.0, hy = 2.235, ha = -0.2, hc = Math.cos(ha), hsn = Math.sin(ha);
+  const HP = (x,y,z) => V(hx + x*hc - y*hsn, hy + x*hsn + y*hc, z || 0);
+  const FACE = C(0x7d6247), GUM = C(0x3a1512), LID = C(0x2e2218);
+  const faceCol = (t,ny) => { const b = bodyColor(t,ny).lerp(FACE, clamp((t-0.22)*2.2,0,0.85)); return t > 0.74 ? b.lerp(HORN, clamp((t-0.74)*9,0,0.9)) : b; };
+  const upper = tube([HP(-0.06,0),HP(0,0.012),HP(0.08,0.02),HP(0.17,0.012),HP(0.26,-0.005),HP(0.33,-0.03),HP(0.365,-0.05)],
+    [0.045,0.07,0.078,0.062,0.042,0.028,0.005], {seg:48, rad:22, sz:0.85, sxFn:t => 1 - 0.3*t, color:faceCol});
+  tube([HP(0.04,-0.035),HP(0.17,-0.045),HP(0.3,-0.052)], [0.02,0.024,0.012], {seg:12, rad:10, sx:0.6, sz:1.3, color:flat(GUM)});
+  const lower = tube([HP(0,-0.04),HP(0.08,-0.062),HP(0.18,-0.07),HP(0.27,-0.075),HP(0.325,-0.078)],
+    [0.03,0.036,0.03,0.022,0.005], {seg:36, rad:18, sx:0.6, sz:1.45,
+     color:(t,ny) => t > 0.72 ? FACE.clone().lerp(HORN, clamp((t-0.72)*9,0,0.9)) : BELLY.clone().lerp(FACE, 0.5)});
+  feather(upper, 260, {u0:0.02, u1:0.3, rmax:0.078, sign:-1, len:0.03, w:0.5});
+  feather(upper, 80, {u0:0.03, u1:0.3, rmax:0.05, sign:-1, len:0.075, a0:-0.4, aSpan:0.8, droop:0, out:0.9, w:0.6});
+  feather(spine, 170, {u0:0.78, u1:0.995, rmax:0.1, sign:-1, len:0.1, a0:-0.35, aSpan:0.7, droop:0.05, out:0.8, w:0.7});
+
+  // Dişler: üst çenenin her yanında 32, alt çenenin her yanında 22 küçük diş
+  const toothList = [];
+  function toothRow(tb, t0, t1, n, isUpper){
+    for (let i = 0; i < n; i++){
+      const R = tb.rings[Math.round((t0 + (t1 - t0)*i/(n-1))*tb.seg)];
+      for (const s of [1,-1]){
+        const pos = R.P.clone().addScaledVector(R.N, (isUpper ? -1 : 1)*Math.cos(0.72)*R.r*R.sx).addScaledVector(R.B, s*Math.sin(0.72)*R.r*R.sz);
+        toothList.push({pos, rot: isUpper ? ha + Math.PI : ha});
+      }
+    }
+  }
+  toothRow(upper, 0.36, 0.7, 32, true); toothRow(lower, 0.28, 0.72, 22, false);
+  const toothG = new THREE.ConeGeometry(0.0026, 0.01, 5); toothG.translate(0, 0.005, 0);
+  const teethMesh = new THREE.InstancedMesh(toothG, new THREE.MeshStandardMaterial({color:0xe9e2cf, roughness:0.4}), toothList.length);
+  const td = new THREE.Object3D();
+  toothList.forEach((t, i) => { td.position.copy(t.pos); td.rotation.set(0,0,t.rot); td.updateMatrix(); teethMesh.setMatrixAt(i, td.matrix); });
+  dino.add(teethMesh);
+
+  // Göz, göz kapağı, kaş çıkıntısı, burun deliği, kulak açıklığı
+  for (const s of [1,-1]){
+    const iris = new THREE.Mesh(new THREE.SphereGeometry(0.02, 24, 18), new THREE.MeshStandardMaterial({color:0xb9791a, roughness:0.2}));
+    iris.position.copy(HP(0.095,0.032,0.05*s)); dino.add(iris);
+    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.0115, 18, 14), new THREE.MeshStandardMaterial({color:0x050505, roughness:0.1}));
+    pupil.position.copy(HP(0.097,0.032,0.0612*s)); dino.add(pupil);
+    const glint = new THREE.Mesh(new THREE.SphereGeometry(0.003, 8, 6), new THREE.MeshBasicMaterial({color:0xffffff}));
+    glint.position.copy(HP(0.103,0.039,0.0705*s)); dino.add(glint);
+    const lid = new THREE.Mesh(new THREE.TorusGeometry(0.0185, 0.0052, 10, 28), new THREE.MeshStandardMaterial({color:LID, roughness:0.9}));
+    lid.position.copy(HP(0.095,0.032,0.0575*s)); dino.add(lid);
+    tube([HP(0.045,0.06,0.046*s),HP(0.095,0.073,0.056*s),HP(0.15,0.052,0.048*s)], [0.007,0.011,0.005], {seg:12, rad:8, color:flat(LID.clone().lerp(FACE,0.35))});
+    ball(HP(0.305,-0.004,0.019*s), 0.006, 0x120d0a);
+    ball(HP(0.01,0.012,0.057*s), 0.007, 0x1a130e);
+  }
+
+  // Bacaklar
+  for (const s of [1,-1]){
+    const dx = s === 1 ? 0.12 : -0.12, z = 0.22*s;
+    const hip = V(-0.15,1.02,z*0.9), knee = V(0.12+dx*0.5,0.62,z*1.1), ank = V(-0.2+dx,0.22,z), foot = V(-0.1+dx,0.05,z);
+    const leg = tube([hip, hip.clone().lerp(knee,0.5), knee, knee.clone().lerp(ank,0.5), ank, foot], [0.19,0.165,0.1,0.07,0.047,0.05],
+      {seg:36, rad:14, color:(t,ny) => bodyColor(t,ny).lerp(SKIN, clamp((t-0.5)*3,0,1))});
+    feather(leg, 260, {u0:0.02, u1:0.55, rmax:0.19, sign:1, len:0.09});
+    ball(foot, 0.052, SKIN);
+    for (const k of [-1,0,1]){
+      const zz = z + k*0.055, L = k === 0 ? 1.1 : 0.9;
+      const a = V(foot.x+0.12*L,0.04,zz), b = V(foot.x+0.2*L,0.032,zz + k*0.02);
+      tube([foot, a, b], [0.04,0.03,0.02], {seg:10, rad:8, color:flat(SKIN)});
+      tube([b, V(b.x+0.04,0.03,b.z), V(b.x+0.085,0.008,b.z)], [0.02,0.014,0.003], {seg:8, rad:8, color:flat(HORN)});
+    }
+  }
+
+  // Kollar ve el pençeleri
+  for (const s of [1,-1]){
+    const lift = s === 1 ? 0 : 0.06;
+    const sh = V(0.42,1.3,0.22*s), el = V(0.4,0.98+lift,0.31*s), wr = V(0.66,0.87+lift*1.5,0.3*s);
+    const arm = tube([sh, sh.clone().lerp(el,0.5), el, el.clone().lerp(wr,0.5), wr], [0.08,0.07,0.058,0.048,0.04],
+      {seg:28, rad:12, color:(t,ny) => bodyColor(t,ny).lerp(SKIN, clamp((t-0.75)*4,0,1))});
+    feather(arm, 240, {u0:0.02, u1:0.9, rmax:0.08, sign:1, len:0.15});
+    ball(wr, 0.042, SKIN);
+    [-1,0,1].forEach(k => {
+      const L = k === 0 ? 1 : 0.86, zo = k*0.045*s;
+      const p1 = V(wr.x+0.1*L, wr.y-0.005, wr.z+zo), p2 = V(wr.x+0.2*L, wr.y-0.06*L, wr.z+zo*1.6),
+            p3 = V(wr.x+0.265*L, wr.y-0.16*L, wr.z+zo*1.8), p4 = V(wr.x+0.27*L, wr.y-0.25*L, wr.z+zo*1.8);
+      tube([wr, wr.clone().lerp(p1,0.5), p1], [0.03,0.028,0.026], {seg:8, rad:8, color:flat(SKIN)});
+      tube([p1, p2, p3, p4], [0.026,0.02,0.011,0.002], {seg:18, rad:8, color:flat(HORN)});
+    });
+  }
+
+  // Tüy örgüsü
+  const fg = new THREE.ConeGeometry(1, 1, 5, 1, true); fg.translate(0, 0.5, 0);
+  const fm = new THREE.MeshStandardMaterial({roughness:1, side:THREE.DoubleSide});
+  const feathers = new THREE.InstancedMesh(fg, fm, plumes.length);
+  const dummy = new THREE.Object3D(), up = V(0,1,0);
+  plumes.forEach((p, i) => {
+    dummy.position.copy(p.pos); dummy.quaternion.setFromUnitVectors(up, p.dir);
+    dummy.scale.set(p.w, p.len, p.w*0.45); dummy.updateMatrix();
+    feathers.setMatrixAt(i, dummy.matrix); feathers.setColorAt(i, p.col);
+  });
+  dino.add(feathers);
+
+  // Zemin, gölge, ölçek çubuğu
+  const groundMat = new THREE.MeshBasicMaterial({color:0xcbd3ca});
+  const ground = new THREE.Mesh(new THREE.CircleGeometry(3.1, 72), groundMat);
+  ground.rotation.x = -Math.PI/2; scene.add(ground);
+  const sc = document.createElement('canvas'); sc.width = sc.height = 128;
+  const sg = sc.getContext('2d'), gr = sg.createRadialGradient(64,64,4,64,64,64);
+  gr.addColorStop(0,'rgba(0,0,0,.42)'); gr.addColorStop(1,'rgba(0,0,0,0)'); sg.fillStyle = gr; sg.fillRect(0,0,128,128);
+  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(4.6,1.5), new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(sc), transparent:true, depthWrite:false}));
+  shadow.rotation.x = -Math.PI/2; shadow.position.set(-0.25,0.004,0); scene.add(shadow);
+  const barA = new THREE.MeshBasicMaterial({color:0x15221d}), barB = new THREE.MeshBasicMaterial({color:0xf1f4ef});
+  const x0 = -1.95, barZ = 0.78;
+  [1,1,1,0.6].forEach((len, i) => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(len, 0.012, 0.07), i % 2 ? barB : barA);
+    m.position.set(x0 + i + len/2, 0.008, barZ); scene.add(m);
+  });
+
+  // İnsan ölçeği
+  const human = new THREE.Group(); human.visible = false; scene.add(human);
+  const hMat = new THREE.MeshStandardMaterial({color:0x7d8f87, roughness:1, transparent:true, opacity:0.7});
+  const hp = (g, x, y, z) => { const m = new THREE.Mesh(g, hMat); m.position.set(x,y,z); human.add(m); };
+  hp(new THREE.CylinderGeometry(0.075,0.06,0.86,10), 0, 0.43, 0.1); hp(new THREE.CylinderGeometry(0.075,0.06,0.86,10), 0, 0.43, -0.1);
+  hp(new THREE.CylinderGeometry(0.17,0.15,0.6,12), 0, 1.16, 0);
+  hp(new THREE.CylinderGeometry(0.05,0.04,0.62,8), 0, 1.13, 0.23); hp(new THREE.CylinderGeometry(0.05,0.04,0.62,8), 0, 1.13, -0.23);
+  hp(new THREE.SphereGeometry(0.115,14,12), 0, 1.635, 0);
+  human.position.set(2.05, 0, 0);
+
+  function readTheme(){
+    const cs = getComputedStyle(document.documentElement);
+    const g = cs.getPropertyValue('--ground').trim(), ink = cs.getPropertyValue('--ink').trim(), sf = cs.getPropertyValue('--surface').trim();
+    if (g) groundMat.color.set(g); if (ink) barA.color.set(ink); if (sf) barB.color.set(sf);
+  }
+  readTheme();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readTheme);
+  new MutationObserver(readTheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+  // Bölümler: modeldeki nokta + kamera görünümü
+  const parts = {
+    skull:   {p:HP(0.06,0.14,0),    t:HP(0.14,0,0),     az:0.75, el:0.12, d:1.15},
+    teeth:   {p:HP(0.34,-0.14,0.03), t:HP(0.2,-0.035,0), az:0.85, el:-0.05, d:0.7},
+    neck:    {p:V(0.66,1.9,0.1),   t:V(0.75,1.85,0),  az:0.3,  el:0.1,  d:2.3},
+    claws:   {p:V(0.95,0.7,0.32),  t:V(0.8,0.85,0.3), az:0.9,  el:0.15, d:1.7},
+    feathers:{p:V(-1.25,1.05,0),   t:V(-0.9,1.0,0),   az:-0.5, el:0.3,  d:2.7},
+    body:    {p:V(0.1,1.2,0.38),   t:V(0.05,1.1,0),   az:0.1,  el:0.1,  d:3.3}
+  };
+  const HOME = {t:V(-0.2,1.12,0), az:0.45, el:0.12, d:5.5};
+  const cur = {t:HOME.t.clone(), az:HOME.az, el:HOME.el, d:HOME.d}, goal = {t:HOME.t.clone(), az:HOME.az, el:HOME.el, d:HOME.d};
+  let selected = null, rotate = !reduce, dragging = false, fit = 1;
+  const hs = [...stage.querySelectorAll('.hs')], cards = [...document.querySelectorAll('.part')];
+  const bRot = document.getElementById('bRot'), bFea = document.getElementById('bFea'), bHum = document.getElementById('bHum');
+  const tagLen = document.getElementById('tagLen'), tagHuman = document.getElementById('tagHuman');
+  const setRot = v => { rotate = v; bRot.setAttribute('aria-pressed', String(v)); };
+  setRot(rotate);
+
+  function wrap(a){ return Math.atan2(Math.sin(a), Math.cos(a)); }
+  function select(id, fromModel){
+    selected = id;
+    hs.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === id)));
+    cards.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === id)));
+    if (!id){
+      caption.hidden = true; goal.t.copy(HOME.t); goal.el = HOME.el; goal.d = HOME.d;
+      goal.az = cur.az + wrap(HOME.az - cur.az); return;
+    }
+    const v = parts[id]; setRot(false);
+    goal.t.copy(v.t); goal.el = v.el; goal.d = v.d; goal.az = cur.az + wrap(v.az - cur.az);
+    const card = cards.find(c => c.dataset.id === id);
+    caption.innerHTML = ''; const b = document.createElement('b'); b.textContent = card.querySelector('h3').textContent;
+    caption.append(b, ' · ' + card.dataset.short); caption.hidden = false;
+    if (fromModel && matchMedia('(min-width: 901px)').matches) card.scrollIntoView({block:'nearest', behavior: reduce ? 'auto' : 'smooth'});
+  }
+  hs.forEach(b => b.addEventListener('click', e => { e.stopPropagation(); select(selected === b.dataset.id ? null : b.dataset.id, true); }));
+  cards.forEach(b => b.addEventListener('click', () => {
+    select(selected === b.dataset.id ? null : b.dataset.id, false);
+    if (selected && !matchMedia('(min-width: 901px)').matches) stage.scrollIntoView({block:'start', behavior: reduce ? 'auto' : 'smooth'});
+  }));
+  bRot.addEventListener('click', () => setRot(!rotate));
+  bFea.addEventListener('click', () => { feathers.visible = !feathers.visible; bFea.setAttribute('aria-pressed', String(feathers.visible)); });
+  bHum.addEventListener('click', () => { human.visible = !human.visible; bHum.setAttribute('aria-pressed', String(human.visible)); tagHuman.hidden = !human.visible; });
+  document.getElementById('bIn').addEventListener('click', () => { goal.d = clamp(goal.d*0.82, 0.5, 11); });
+  document.getElementById('bOut').addEventListener('click', () => { goal.d = clamp(goal.d*1.22, 1.0, 11); });
+  document.getElementById('bAll').addEventListener('click', () => select(null));
+
+  let lx = 0, ly = 0;
+  canvas.addEventListener('pointerdown', e => { dragging = true; lx = e.clientX; ly = e.clientY; stage.classList.add('drag'); try { canvas.setPointerCapture(e.pointerId); } catch(_){} });
+  canvas.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    goal.az -= (e.clientX - lx)*0.008; goal.el = clamp(goal.el + (e.clientY - ly)*0.006, -0.04, 1.25);
+    lx = e.clientX; ly = e.clientY;
+  });
+  const endDrag = () => { dragging = false; stage.classList.remove('drag'); };
+  canvas.addEventListener('pointerup', endDrag); canvas.addEventListener('pointercancel', endDrag);
+  canvas.addEventListener('keydown', e => {
+    const k = e.key;
+    if (k === 'ArrowLeft') goal.az -= 0.15; else if (k === 'ArrowRight') goal.az += 0.15;
+    else if (k === 'ArrowUp') goal.el = clamp(goal.el + 0.1, -0.04, 1.25); else if (k === 'ArrowDown') goal.el = clamp(goal.el - 0.1, -0.04, 1.25);
+    else return;
+    e.preventDefault();
+  });
+
+  let W = 0, H = 0;
+  function resize(){
+    W = stage.clientWidth; H = stage.clientHeight; if (!W || !H) return;
+    renderer.setSize(W, H, false); camera.aspect = W/H; camera.updateProjectionMatrix();
+    fit = Math.max(1, 1.5/camera.aspect);
+  }
+  new ResizeObserver(resize).observe(stage); resize();
+
+  const tmp = V(0,0,0);
+  function place(el, p){
+    tmp.copy(p).project(camera);
+    const vis = tmp.z < 1 && Math.abs(tmp.x) < 1.05 && Math.abs(tmp.y) < 1.05;
+    el.style.visibility = vis ? 'visible' : 'hidden';
+    el.style.transform = 'translate(' + ((tmp.x*0.5+0.5)*W).toFixed(1) + 'px,' + ((-tmp.y*0.5+0.5)*H).toFixed(1) + 'px)';
+  }
+  const lenP = V(x0 + 1.8, 0.02, barZ), humP = V(2.05, 1.9, 0);
+  let last = performance.now();
+  function frame(now){
+    const dt = Math.min(0.05, (now - last)/1000); last = now;
+    if (rotate && !dragging && !selected) goal.az += dt*0.16;
+    const k = reduce ? 1 : Math.min(1, dt*5);
+    cur.az += (goal.az - cur.az)*k; cur.el += (goal.el - cur.el)*k; cur.d += (goal.d - cur.d)*k; cur.t.lerp(goal.t, k);
+    const d = cur.d * (selected ? Math.min(fit, 1.25) : fit), ce = Math.cos(cur.el);
+    camera.position.set(cur.t.x + d*Math.sin(cur.az)*ce, cur.t.y + d*Math.sin(cur.el), cur.t.z + d*Math.cos(cur.az)*ce);
+    camera.lookAt(cur.t);
+    camera.updateMatrixWorld();
+    renderer.render(scene, camera);
+    hs.forEach(b => place(b, parts[b.dataset.id].p));
+    place(tagLen, lenP); if (human.visible) place(tagHuman, humP);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

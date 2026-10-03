@@ -1,0 +1,26 @@
+# İşletim sistemi dosyaları
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editör ve IDE ayarları
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Bağımlılıklar ve derleme çıktıları (ileride araç eklenirse)
+node_modules/
+dist/
+build/
+.cache/
+
+# Günlükler ve geçici dosyalar
+*.log
+npm-debug.log*
+*.tmp
+
+# Ortam değişkenleri
+.env
+.env.*
